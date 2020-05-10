@@ -1,0 +1,29 @@
+---
+- name: install coturn packages
+  with_items: "{{ coturn_packages }}"
+  package:
+    name: "{{ item.name }}"
+  notify:
+    - restart coturn
+
+- name: configure coturn
+  template:
+    src: turnserver.conf.j2
+    dest: /usr/local/etc/turnserver.conf
+  notify:
+    - restart coturn
+
+- name: enable coturn
+  template:
+    src: turnserver.j2
+    dest: /etc/rc.conf.d/turnserver
+  notify:
+    - restart coturn
+
+- name: install coturn service file
+  template:
+    src: turnserver.rc.j2
+    dest: /usr/local/etc/rc.d/turnserver
+    mode: 0755
+  notify:
+    - restart coturn

@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# $FreeBSD$
+#
+
+# PROVIDE: turnserver
+# AFTER: NETWORKING
+
+. /etc/rc.subr
+
+name="turnserver"
+desc="Coturn STUN/TURN server"
+command="/usr/local/bin/turnserver"
+pidfile="/var/run/${name}.pid"
+start_cmd="${name}_start"
+
+: ${turnserver_config:=/usr/local/etc/turnserver.conf}
+
+
+turnserver_start() {
+	/usr/local/bin/turnserver -c ${turnserver_config} --pidfile ${pidfile} --daemon --no-stdout-log ${turnserver_flags}
+}
+
+
+load_rc_config $name
+run_rc_command "$1"
